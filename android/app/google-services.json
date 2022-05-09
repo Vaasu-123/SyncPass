@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "17948044719",
+    "project_id": "syncpass-c1b16",
+    "storage_bucket": "syncpass-c1b16.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17948044719:android:4dc3a6da429ee405d3135a",
+        "android_client_info": {
+          "package_name": "com.example.passwordmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17948044719-bv3trleurmi6s5mnoa83vr38nf6pt994.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs5L4QaESnrFVIu1DDgs11rr8jNLjdFsk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17948044719-bv3trleurmi6s5mnoa83vr38nf6pt994.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
