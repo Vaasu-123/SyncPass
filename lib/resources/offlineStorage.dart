@@ -42,11 +42,11 @@ class PasswordDatabase {
   }
 
   Future create({required passModel pass}) async {
-    print("Iam here");
+    // print("Iam here");
     final db = await instance.database;
-    print("Iam here");
+    // print("Iam here");
     final id = await db.insert(tablePasses, pass.toJson());
-    print("Iam here");
+    // print("Iam here");
     print(await db.rawQuery(
         'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC'));
   }
@@ -77,6 +77,11 @@ class PasswordDatabase {
       where: '${passFields.uid} = ?',
       whereArgs: [id],
     );
+  }
+
+  Future deleteAll()async{
+    final db = await instance.database;
+    db.delete(tablePasses);
   }
 
   // Future readPass(String id) async {

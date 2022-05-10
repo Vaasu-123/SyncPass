@@ -6,6 +6,44 @@ import 'package:uuid/uuid.dart';
 
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final user = FirebaseAuth.instance.currentUser;
+  Future loadFromOnlinetoOffline() async {
+    final passes = await _firestore.collection('passes').doc(user!.uid).get();
+    final db = await PasswordDatabase.instance;
+    await db.database;
+    await db.deleteAll();
+    if (passes.exists) {
+      for (var item in passes.data() as List<Map<String, Object>>) {
+        passModel pass = passModel(
+          password: item['password'],
+          websiteName: item['websiteName'],
+          uid: item['uid'],
+        );
+        db.create(pass: pass);
+      }
+    }
+  }
+
+  Future loadFromOfflinetoOnline() async {
+    final List<Map> db = await PasswordDatabase.instance.getAll();
+    print("Idhar toh aa gya");
+    for (Map item in db) {
+      passModel pass = passModel(
+        password: item['password'],
+        websiteName: item['websiteName'],
+        uid: item['uid'],
+      );
+      // final passes = await _firestore.collection('passes').doc(uid).get();
+      await _firestore
+          .collection('passes')
+          .doc(user!.uid)
+          .collection('passwords')
+          .doc(item['uid'])
+          .set(pass.toJson());
+    }
+    print("Congratulations");
+  }
+
   Future addPassword(
       {required password, required website, required uid}) async {
     final uidd = Uuid().v1();
@@ -16,7 +54,7 @@ class FireStoreMethods {
     );
 
     // await PasswordDatabase.instance.database;
-    print("Check");
+    // print("Check");
     //print(PasswordDatabase.instance.database);
     await PasswordDatabase.instance.create(pass: pass);
 

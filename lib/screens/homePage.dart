@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:passwordmanager/resources/auth.dart';
 import 'package:passwordmanager/utils/colors.dart';
 import 'package:passwordmanager/widgets/centerTitle.dart';
+import 'package:passwordmanager/widgets/homepage_drawer.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,6 +12,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+      drawer: HomePageDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,

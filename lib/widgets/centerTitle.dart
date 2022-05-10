@@ -220,7 +220,6 @@ class CenterTitle extends StatelessWidget {
                   savedPasswordController.clear();
                   websiteNameController.clear();
                   Navigator.of(context).pop();
-                  
                 },
                 child: Row(
                   children: [
@@ -258,6 +257,7 @@ class CenterTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // fireStoreMethods.loadFromOfflinetoOnline(uid: user!.uid);
     return Column(
       children: [
         // Flexible(
