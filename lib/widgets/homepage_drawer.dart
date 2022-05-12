@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:passwordmanager/utils/colors.dart';
+import 'package:passwordmanager/widgets/buttons.dart';
+import 'package:passwordmanager/widgets/custom_button.dart';
 import '../resources/firestore_methods.dart';
 
 class HomePageDrawer extends StatelessWidget {
   HomePageDrawer({Key? key}) : super(key: key);
   final firestoremethods = FireStoreMethods();
+  CustomButtons? drawerButtons;
+  // CustomButtons? offlinetoonline;
 
   @override
   Widget build(BuildContext context) {
@@ -58,49 +62,42 @@ class HomePageDrawer extends StatelessWidget {
                       )
                     ],
                   ),
-                  child: TextButton(
-                    onPressed: () {
-                      print("going offline");
-                      firestoremethods.loadFromOnlinetoOffline();
+                  child: GestureDetector(
+                    onTap: () async {
+                      await firestoremethods.loadFromOnlinetoOffline();
+                      Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      "Upload Passwords \nFrom Online To Offline",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Ubuntu',
-                      ),
-                    ),
+                    child: drawerButtons = CustomButtons(
+                        buttonText:
+                            "Upload Passwords \nFrom Online to Offline"),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.black, width: 1),
-                    color: Colors.white,
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.black,
-                        spreadRadius: 0,
-                        blurRadius: 0,
-                        offset: Offset(3, 6),
-                      )
-                    ],
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      print("going online");
-                      firestoremethods.loadFromOfflinetoOnline();
-                    },
-                    child: const Text(
-                      "Upload Passwords \nFrom Offline To Online",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontFamily: 'Ubuntu',
-                      ),
+                GestureDetector(
+                  onTap: () async {
+                    print("going online");
+                    await firestoremethods.loadFromOfflinetoOnline();
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.black, width: 1),
+                      color: Colors.white,
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black,
+                          spreadRadius: 0,
+                          blurRadius: 0,
+                          offset: Offset(3, 6),
+                        )
+                      ],
                     ),
+                    child: drawerButtons = CustomButtons(
+                        buttonText:
+                            "Upload Passwords \nFrom Offline to Online"),
                   ),
                 ),
                 Text(

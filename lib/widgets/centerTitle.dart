@@ -4,6 +4,7 @@ import 'package:glassmorphism/glassmorphism.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
 import 'package:passwordmanager/resources/passwords.dart';
 import 'package:passwordmanager/utils/colors.dart';
+import 'package:passwordmanager/widgets/save_button.dart';
 import 'buttons.dart';
 
 class CenterTitle extends StatelessWidget {
@@ -12,10 +13,21 @@ class CenterTitle extends StatelessWidget {
   TextEditingController websiteNameController = TextEditingController();
   TextEditingController savedPasswordController = TextEditingController();
   FireStoreMethods fireStoreMethods = FireStoreMethods();
+  // String generated_password = "";
+
+  // Future generatePassOnPressed() async {
+  //   await fireStoreMethods.addPassword(
+  //     password: generated_password,
+  //     website: websiteNameController.text,
+  //     uid: user!.uid,
+  //   );
+  //   websiteNameController.clear();
+  // }
 
   void generatePass(BuildContext context) {
     Passwords object = Passwords();
     String generated_password = object.generatePasswords();
+    SaveButton textButton = SaveButton();
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: blueColor,
@@ -87,8 +99,8 @@ class CenterTitle extends StatelessWidget {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () async {
+              GestureDetector(
+                onTap: () async {
                   await fireStoreMethods.addPassword(
                     password: generated_password,
                     website: websiteNameController.text,
@@ -97,32 +109,7 @@ class CenterTitle extends StatelessWidget {
                   websiteNameController.clear();
                   Navigator.of(context).pop();
                 },
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Container(),
-                      flex: 1,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: Text(
-                        "Save Password",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(),
-                      flex: 1,
-                    ),
-                  ],
-                ),
+                child: textButton,
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -137,6 +124,7 @@ class CenterTitle extends StatelessWidget {
   }
 
   void savePass(BuildContext context) {
+    SaveButton textButton = SaveButton();
     showModalBottomSheet(
       backgroundColor: blueColor,
       isScrollControlled: true,
@@ -217,43 +205,19 @@ class CenterTitle extends StatelessWidget {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () async {
+              GestureDetector(
+                onTap: () async {
+                  print("execute hogya");
                   await fireStoreMethods.addPassword(
-                    password: savedPasswordController.text,
-                    website: websiteNameController.text,
-                    uid: user!.uid,
-                  );
-                  savedPasswordController.clear();
-                  websiteNameController.clear();
-                  Navigator.of(context).pop();
+                      password: savedPasswordController.text,
+                      website: websiteNameController.text,
+                      uid: user!.uid,
+                    );
+                    savedPasswordController.clear();
+                    websiteNameController.clear();
+                    Navigator.of(context).pop();
                 },
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: Container(),
-                      flex: 1,
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.white),
-                      child: Text(
-                        "Save Password",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(),
-                      flex: 1,
-                    ),
-                  ],
-                ),
+                child: textButton,
               ),
               Padding(
                 padding: EdgeInsets.only(

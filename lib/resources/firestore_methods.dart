@@ -8,6 +8,7 @@ class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   Future loadFromOnlinetoOffline() async {
+    print("Online to offline");
     //works
     final passes = await _firestore
         .collection('passes')
@@ -35,6 +36,7 @@ class FireStoreMethods {
   }
 
   Future loadFromOfflinetoOnline() async {
+    print("Offline to online");
     //works
     final List db = await PasswordDatabase.instance.getAll(userId: user!.uid);
     print("Idhar toh aa gya");
