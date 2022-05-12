@@ -36,8 +36,14 @@ class MyApp extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 ),
               );
+            } else {
+              return SignInPage();
             }
-            return SignInPage();
+            return const Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
           },
         ),
         routes: {

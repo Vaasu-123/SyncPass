@@ -60,6 +60,7 @@ class HomePageDrawer extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: () {
+                      print("going offline");
                       firestoremethods.loadFromOnlinetoOffline();
                     },
                     child: const Text(
@@ -90,7 +91,8 @@ class HomePageDrawer extends StatelessWidget {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      firestoremethods.loadFromOnlinetoOffline();
+                      print("going online");
+                      firestoremethods.loadFromOfflinetoOnline();
                     },
                     child: const Text(
                       "Upload Passwords \nFrom Offline To Online",
@@ -101,13 +103,14 @@ class HomePageDrawer extends StatelessWidget {
                     ),
                   ),
                 ),
-                const Text(
-                      "Made by Vaasu Garg",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Ubuntu',
-                      ),
-                    ),
+                Text(
+                  "Made by Vaasu Garg",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Ubuntu',
+                  ),
+                ),
+
                 // Flexible(
                 //   flex: 3,
                 //   child: Container(),
@@ -119,7 +122,7 @@ class HomePageDrawer extends StatelessWidget {
                 //   // mainAxisSize: MainAxisSize.max,
                 //   // crossAxisAlignment: CrossAxisAlignment.center,
                 //   children: const [
-                    
+
                 //   ],
                 // ),
               ],

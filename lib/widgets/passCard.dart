@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
+import 'package:passwordmanager/resources/offlineStorage.dart';
 import 'package:passwordmanager/widgets/centerTitle.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -23,11 +25,12 @@ class _PassCardState extends State<PassCard> {
   bool didAuthenticate = false;
   final LocalAuthentication auth = LocalAuthentication();
   FireStoreMethods _fireStoreMethods = FireStoreMethods();
+  PasswordDatabase pdoffline = PasswordDatabase.instance;
 
   Future authenticate() async {
     try {
       didAuthenticate = await auth.authenticate(
-        localizedReason: 'Please authenticate to show account balance',
+        localizedReason: 'Please authenticate to access',
         options: const AuthenticationOptions(useErrorDialogs: true),
       );
       // ···
@@ -65,7 +68,8 @@ class _PassCardState extends State<PassCard> {
       await authenticate();
     }
     if (didAuthenticate) {
-      _fireStoreMethods.deletePass(passId: widget.snap['uid']);
+      await _fireStoreMethods.deletePass(passId: widget.snap['uid']);
+      await pdoffline.delete(id: widget.snap['uid']);
     }
   }
 
@@ -93,6 +97,7 @@ class _PassCardState extends State<PassCard> {
 
       showModalBottomSheet(
         backgroundColor: blueColor,
+        isScrollControlled: true,
         context: context,
         builder: (context) {
           return Padding(
@@ -182,6 +187,13 @@ class _PassCardState extends State<PassCard> {
                       password: savedPasswordController.text,
                       website: websiteNameController.text,
                     );
+
+                    await pdoffline.update(
+                      id: widget.snap['uid'],
+                      password: savedPasswordController.text,
+                      website: websiteNameController.text,
+                      userId: FirebaseAuth.instance.currentUser!.uid,
+                    );
                     // savedPasswordController.clear();
                     // websiteNameController.clear();
                     Navigator.of(context).pop();
@@ -212,6 +224,11 @@ class _PassCardState extends State<PassCard> {
                       ),
                     ],
                   ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  child: Container(),
                 ),
               ],
             ),

@@ -17,6 +17,7 @@ class CenterTitle extends StatelessWidget {
     Passwords object = Passwords();
     String generated_password = object.generatePasswords();
     showModalBottomSheet(
+      isScrollControlled: true,
       backgroundColor: blueColor,
       context: context,
       builder: (context) {
@@ -123,6 +124,11 @@ class CenterTitle extends StatelessWidget {
                   ],
                 ),
               ),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Container(),
+              ),
             ],
           ),
         );
@@ -133,6 +139,7 @@ class CenterTitle extends StatelessWidget {
   void savePass(BuildContext context) {
     showModalBottomSheet(
       backgroundColor: blueColor,
+      isScrollControlled: true,
       context: context,
       builder: (context) {
         return Padding(
@@ -247,6 +254,11 @@ class CenterTitle extends StatelessWidget {
                     ),
                   ],
                 ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: Container(),
               ),
             ],
           ),

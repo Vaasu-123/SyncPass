@@ -5,11 +5,13 @@ class passFields {
     uid,
     password,
     websiteName,
+    userid,
   ];
 
   static final String uid = "uid";
   static final String password = 'password';
   static final String websiteName = 'websiteName';
+  static final String userid = "userid";
 }
 
 class passModel {

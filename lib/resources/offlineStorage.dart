@@ -29,47 +29,71 @@ class PasswordDatabase {
   }
 
   Future _createDB(Database db, int version) async {
-    final idType = 'TEXT NOT NULL PRIMARY KEY';
+    final idType = 'TEXT NOT NULL';
     final websiteNameType = 'TEXT NOT NULL';
     final passwordType = 'TEXT NOT NULL';
+    final userid = 'TEXT NOT NULL';
     await db.execute(''' 
       CREATE TABLE $tablePasses(
         ${passFields.uid} $idType,
         ${passFields.password} $passwordType,
-        ${passFields.websiteName} $websiteNameType
+        ${passFields.websiteName} $websiteNameType,
+        ${passFields.userid} $userid
       )
       ''');
   }
 
-  Future create({required passModel pass}) async {
+  //works
+  Future create({required passModel pass, required userId}) async {
     // print("Iam here");
     final db = await instance.database;
     // print("Iam here");
-    final id = await db.insert(tablePasses, pass.toJson());
+    var x = pass.toJson();
+    final temp = {'userid': userId};
+    x.addEntries(temp.entries);
+    print(x);
+    final id = await db.insert(tablePasses, x);
     // print("Iam here");
     print(await db.rawQuery(
         'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC'));
   }
 
-  Future<List<Map>> getAll() async {
+  //works
+  Future<List> getAll({required userId}) async {
     final db = await instance.database;
-    return await db.rawQuery(
-        'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC');
+    try {
+      return await db.rawQuery(
+          'SELECT * FROM $tablePasses WHERE ${passFields.userid}="$userId" ORDER BY ${passFields.websiteName} ASC ');
+    } catch (e) {
+      return [];
+    }
   }
 
-  Future update({required id, required password, required website}) async {
+  //works
+  Future update(
+      {required id,
+      required password,
+      required website,
+      required userId}) async {
     passModel pass =
         new passModel(password: password, websiteName: website, uid: id);
+    var x = pass.toJson();
+    final temp = {'userid': userId};
+    x.addEntries(temp.entries);
 
     final db = await instance.database;
     db.update(
       tablePasses,
-      pass.toJson(),
+      x,
       where: '${passFields.uid} = ?',
       whereArgs: [id],
     );
+    print(await db.rawQuery(
+        'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC'));
   }
 
+
+  //works
   Future delete({required id}) async {
     final db = await instance.database;
     db.delete(
@@ -77,11 +101,18 @@ class PasswordDatabase {
       where: '${passFields.uid} = ?',
       whereArgs: [id],
     );
+    print(await db.rawQuery(
+        'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC'));
   }
 
-  Future deleteAll()async{
+  //works
+  Future deleteAll({required userId}) async {
     final db = await instance.database;
-    db.delete(tablePasses);
+    db.delete(
+      tablePasses,
+      where: "${passFields.userid} = ?",
+      whereArgs: [userId],
+    );
   }
 
   // Future readPass(String id) async {

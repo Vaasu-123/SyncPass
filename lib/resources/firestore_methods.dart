@@ -8,38 +8,51 @@ class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
   Future loadFromOnlinetoOffline() async {
-    final passes = await _firestore.collection('passes').doc(user!.uid).get();
+    //works
+    final passes = await _firestore
+        .collection('passes')
+        .doc(user!.uid)
+        .collection('passwords')
+        .get();
+    print(passes.docs);
     final db = await PasswordDatabase.instance;
     await db.database;
-    await db.deleteAll();
-    if (passes.exists) {
-      for (var item in passes.data() as List<Map<String, Object>>) {
+    if (passes != []) {
+      print("yha aaya tha");
+      await db.deleteAll(userId: user!.uid);
+      print("object");
+      for (var item in passes.docs) {
         passModel pass = passModel(
           password: item['password'],
           websiteName: item['websiteName'],
           uid: item['uid'],
         );
-        db.create(pass: pass);
+        db.create(pass: pass, userId: user!.uid);
       }
     }
+    print(await (await db.database).rawQuery(
+        'SELECT * FROM $tablePasses ORDER BY ${passFields.websiteName} ASC'));
   }
 
   Future loadFromOfflinetoOnline() async {
-    final List<Map> db = await PasswordDatabase.instance.getAll();
+    //works
+    final List db = await PasswordDatabase.instance.getAll(userId: user!.uid);
     print("Idhar toh aa gya");
-    for (Map item in db) {
-      passModel pass = passModel(
-        password: item['password'],
-        websiteName: item['websiteName'],
-        uid: item['uid'],
-      );
-      // final passes = await _firestore.collection('passes').doc(uid).get();
-      await _firestore
-          .collection('passes')
-          .doc(user!.uid)
-          .collection('passwords')
-          .doc(item['uid'])
-          .set(pass.toJson());
+    if (db != []) {
+      for (Map item in db) {
+        passModel pass = passModel(
+          password: item['password'],
+          websiteName: item['websiteName'],
+          uid: item['uid'],
+        );
+        // final passes = await _firestore.collection('passes').doc(uid).get();
+        await _firestore
+            .collection('passes')
+            .doc(user!.uid)
+            .collection('passwords')
+            .doc(item['uid'])
+            .set(pass.toJson());
+      }
     }
     print("Congratulations");
   }
@@ -52,11 +65,7 @@ class FireStoreMethods {
       websiteName: website,
       uid: uidd,
     );
-
-    // await PasswordDatabase.instance.database;
-    // print("Check");
-    //print(PasswordDatabase.instance.database);
-    await PasswordDatabase.instance.create(pass: pass);
+    await PasswordDatabase.instance.create(pass: pass, userId: user!.uid);
 
     final passes = await _firestore.collection('passes').doc(uid).get();
     if (passes.exists) {
@@ -82,7 +91,9 @@ class FireStoreMethods {
 
   Future deletePass({required passId}) async {
     final user = FirebaseAuth.instance.currentUser;
-
+    final db = await PasswordDatabase.instance;
+    await db.database;
+    db.delete(id: passId);
     await _firestore
         .collection('passes')
         .doc(user!.uid)
