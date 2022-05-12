@@ -109,16 +109,29 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                 });
 
                 // snapss.simpleSort();
-                return ListView.builder(
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: ((context, index) {
-                    return Container(
-                      child: PassCard(
-                        snap: snapss[index].data(),
+                if (snapshot.data!.docs.length == 0) {
+                  return Center(
+                    child: Text(
+                      "No passwords saved yet",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Ubuntu',
+                        fontWeight: FontWeight.w900,
                       ),
-                    );
-                  }),
-                );
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.docs.length,
+                    itemBuilder: ((context, index) {
+                      return Container(
+                        child: PassCard(
+                          snap: snapss[index].data(),
+                        ),
+                      );
+                    }),
+                  );
+                }
               }
               return const Center(
                 child: CircularProgressIndicator(),
