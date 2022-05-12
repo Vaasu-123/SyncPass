@@ -22,14 +22,14 @@ class PassCard extends StatefulWidget {
 class _PassCardState extends State<PassCard> {
   List<Widget> pass = [];
   bool isVisible = false;
-  bool didAuthenticate = false;
+  bool _didAuthenticate = false;
   final LocalAuthentication auth = LocalAuthentication();
   FireStoreMethods _fireStoreMethods = FireStoreMethods();
   PasswordDatabase pdoffline = PasswordDatabase.instance;
 
   Future authenticate() async {
     try {
-      didAuthenticate = await auth.authenticate(
+      _didAuthenticate = await auth.authenticate(
         localizedReason: 'Please authenticate to access',
         options: const AuthenticationOptions(useErrorDialogs: true),
       );
@@ -40,10 +40,10 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future copyToClipBoard() async {
-    if (!didAuthenticate) {
+    if (!_didAuthenticate) {
       await authenticate();
     }
-    if (didAuthenticate) {
+    if (_didAuthenticate) {
       Clipboard.setData(
         ClipboardData(
           text: widget.snap['password'],
@@ -53,10 +53,10 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future visibilityStatus() async {
-    if (!didAuthenticate) {
+    if (!_didAuthenticate) {
       await authenticate();
     }
-    if (didAuthenticate) {
+    if (_didAuthenticate) {
       setState(() {
         isVisible = !isVisible;
       });
@@ -64,13 +64,15 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future deletePass() async {
-    if (!didAuthenticate) {
+    if (!_didAuthenticate) {
       await authenticate();
     }
-    if (didAuthenticate) {
-      await _fireStoreMethods.deletePass(passId: widget.snap['uid']);
+    if (_didAuthenticate) {
       await pdoffline.delete(id: widget.snap['uid']);
+      await _fireStoreMethods.deletePass(passId: widget.snap['uid']);
     }
+    _didAuthenticate = false;
+    isVisible = false;
   }
 
   void loadPass() {
@@ -86,10 +88,10 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future editDetails(BuildContext context) async {
-    if (!didAuthenticate) {
+    if (!_didAuthenticate) {
       await authenticate();
     }
-    if (didAuthenticate) {
+    if (_didAuthenticate) {
       TextEditingController savedPasswordController = TextEditingController();
       TextEditingController websiteNameController = TextEditingController();
       savedPasswordController.text = widget.snap['password'];

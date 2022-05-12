@@ -8,6 +8,8 @@ import 'package:provider/provider.dart';
 import './screens/signInPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+
+final navigatorKey = GlobalKey<NavigatorState>();
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -23,6 +25,7 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => GoogleSignInProvider(),
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Password Manager',
         home: StreamBuilder(

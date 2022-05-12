@@ -27,7 +27,7 @@ class CenterTitle extends StatelessWidget {
   void generatePass(BuildContext context) {
     Passwords object = Passwords();
     String generated_password = object.generatePasswords();
-    SaveButton textButton = SaveButton();
+    SaveButton? textButton;
     showModalBottomSheet(
       isScrollControlled: true,
       backgroundColor: blueColor,
@@ -99,8 +99,12 @@ class CenterTitle extends StatelessWidget {
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () async {
+              TextButton(
+                style: ButtonStyle(
+                  overlayColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.transparent),
+                ),
+                onPressed: () async {
                   await fireStoreMethods.addPassword(
                     password: generated_password,
                     website: websiteNameController.text,
@@ -109,7 +113,10 @@ class CenterTitle extends StatelessWidget {
                   websiteNameController.clear();
                   Navigator.of(context).pop();
                 },
-                child: textButton,
+                child: textButton = SaveButton(
+                  websiteNameController: websiteNameController,
+                  pass: generated_password,
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -124,7 +131,7 @@ class CenterTitle extends StatelessWidget {
   }
 
   void savePass(BuildContext context) {
-    SaveButton textButton = SaveButton();
+    SaveButton? textButton;
     showModalBottomSheet(
       backgroundColor: blueColor,
       isScrollControlled: true,
@@ -209,15 +216,18 @@ class CenterTitle extends StatelessWidget {
                 onTap: () async {
                   print("execute hogya");
                   await fireStoreMethods.addPassword(
-                      password: savedPasswordController.text,
-                      website: websiteNameController.text,
-                      uid: user!.uid,
-                    );
-                    savedPasswordController.clear();
-                    websiteNameController.clear();
-                    Navigator.of(context).pop();
+                    password: savedPasswordController.text,
+                    website: websiteNameController.text,
+                    uid: user!.uid,
+                  );
+                  savedPasswordController.clear();
+                  websiteNameController.clear();
+                  Navigator.of(context).pop();
                 },
-                child: textButton,
+                child: textButton = SaveButton(
+                  websiteNameController: websiteNameController,
+                  savedPasswordController: savedPasswordController,
+                ),
               ),
               Padding(
                 padding: EdgeInsets.only(
