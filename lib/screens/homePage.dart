@@ -1,15 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:passwordmanager/resources/auth.dart';
+import 'package:passwordmanager/resources/firestore_methods.dart';
 // import 'package:passwordmanager/resources/firestore_methods.dart';
 import 'package:passwordmanager/utils/colors.dart';
+import 'package:passwordmanager/widgets/alert_dialog_box.dart';
 import 'package:passwordmanager/widgets/centerTitle.dart';
 import 'package:passwordmanager/widgets/homepage_drawer.dart';
 import 'package:provider/provider.dart';
 // import 'package:is_first_run/is_first_run.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
+  static bool _firstRun = true;
+  void initialRun() async {
+    if (_firstRun) {
+      FireStoreMethods fireStoreMethods = FireStoreMethods();
 
+      fireStoreMethods.loadFromOfflinetoOnline(firstTime: true);
+      internetCheck();
+    }
+    _firstRun = false;
+  }
+
+  bool internetAvailable = false;
+
+  Future internetCheck() async {
+    internetAvailable = await InternetConnectionChecker().hasConnection;
+    if (!internetAvailable) {
+      CustomAlertDialogBox alertDialogBox = CustomAlertDialogBox();
+      alertDialogBox.dialogBox(
+          textToDisplay: "Please connect to the Internet!");
+    }
+  }
   // void automaticData() async {
   //   bool firstCall = await IsFirstRun.isFirstCall();
   //   if (firstCall) {
@@ -27,6 +50,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     // automaticData();
     // newUser();
+    initialRun();
+    print("App was rebuilt");
     return Scaffold(
       extendBodyBehindAppBar: true,
       drawer: HomePageDrawer(),

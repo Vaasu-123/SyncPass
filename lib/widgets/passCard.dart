@@ -73,7 +73,7 @@ class _PassCardState extends State<PassCard> {
       await authenticate();
     }
     if (widget.didAuthenticate) {
-      await pdoffline.delete(id: widget.snap['uid']);
+      // await pdoffline.delete(id: widget.snap['uid']);
       await _fireStoreMethods.deletePass(passId: widget.snap['uid']);
     }
     // widget.didAuthenticate = false;

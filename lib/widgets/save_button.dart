@@ -5,6 +5,8 @@ import 'package:passwordmanager/main.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
 import 'package:passwordmanager/widgets/alert_dialog_box.dart';
 
+import '../resources/storing_uid.dart';
+
 class SaveButton extends StatefulWidget {
   TextEditingController websiteNameController;
   TextEditingController? savedPasswordController = TextEditingController();
@@ -40,7 +42,7 @@ class _SaveButtonState extends State<SaveButton> {
         await fireStoreMethods.addPassword(
           password: widget.pass,
           website: widget.websiteNameController.text,
-          uid: user!.uid,
+          uid: await UserSecureStorage.getUserId(),
         );
         widget.websiteNameController.clear();
         // Navigator.of(navigatorKey.currentContext!).pop();
@@ -59,7 +61,7 @@ class _SaveButtonState extends State<SaveButton> {
         await fireStoreMethods.addPassword(
           password: widget.savedPasswordController!.text,
           website: widget.websiteNameController.text,
-          uid: user!.uid,
+          uid: await UserSecureStorage.getUserId(),
         );
         widget.savedPasswordController!.clear();
         widget.websiteNameController.clear();

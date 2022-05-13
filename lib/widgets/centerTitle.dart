@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
 import 'package:passwordmanager/resources/passwords.dart';
+import 'package:passwordmanager/resources/storing_uid.dart';
 import 'package:passwordmanager/utils/colors.dart';
 import 'package:passwordmanager/widgets/save_button.dart';
 import 'buttons.dart';
@@ -108,7 +109,7 @@ class CenterTitle extends StatelessWidget {
                   await fireStoreMethods.addPassword(
                     password: generated_password,
                     website: websiteNameController.text,
-                    uid: user!.uid,
+                    uid: await UserSecureStorage.getUserId(),
                   );
                   websiteNameController.clear();
                   Navigator.of(context).pop();
@@ -218,7 +219,7 @@ class CenterTitle extends StatelessWidget {
                   await fireStoreMethods.addPassword(
                     password: savedPasswordController.text,
                     website: websiteNameController.text,
-                    uid: user!.uid,
+                    uid: await UserSecureStorage.getUserId(),
                   );
                   savedPasswordController.clear();
                   websiteNameController.clear();
