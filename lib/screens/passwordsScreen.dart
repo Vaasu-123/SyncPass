@@ -127,6 +127,8 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                       return Container(
                         child: PassCard(
                           snap: snapss[index].data(),
+                          isVisible: false,
+                          didAuthenticate: false,
                         ),
                       );
                     }),

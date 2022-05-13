@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:passwordmanager/resources/firestore_methods.dart';
 
 class GoogleSignInProvider extends ChangeNotifier {
   final googleSignIn = GoogleSignIn();
@@ -26,6 +27,8 @@ class GoogleSignInProvider extends ChangeNotifier {
     } catch (e) {
       print(e);
     }
+    FireStoreMethods fireStoreMethods = FireStoreMethods();
+    await fireStoreMethods.loadFromOnlinetoOffline();
   }
 
   Future logout() async {

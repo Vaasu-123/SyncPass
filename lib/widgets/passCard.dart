@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
 import 'package:passwordmanager/resources/offlineStorage.dart';
+import 'package:passwordmanager/widgets/alert_dialog_box.dart';
 import 'package:passwordmanager/widgets/centerTitle.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -10,9 +11,13 @@ import '../utils/colors.dart';
 
 class PassCard extends StatefulWidget {
   final snap;
+  bool isVisible;
+  bool didAuthenticate;
   PassCard({
     Key? key,
     required this.snap,
+    required this.isVisible,
+    required this.didAuthenticate,
   }) : super(key: key);
 
   @override
@@ -21,15 +26,15 @@ class PassCard extends StatefulWidget {
 
 class _PassCardState extends State<PassCard> {
   List<Widget> pass = [];
-  bool isVisible = false;
-  bool _didAuthenticate = false;
+
   final LocalAuthentication auth = LocalAuthentication();
   FireStoreMethods _fireStoreMethods = FireStoreMethods();
   PasswordDatabase pdoffline = PasswordDatabase.instance;
+  CustomAlertDialogBox alertDialogBox = CustomAlertDialogBox();
 
   Future authenticate() async {
     try {
-      _didAuthenticate = await auth.authenticate(
+      widget.didAuthenticate = await auth.authenticate(
         localizedReason: 'Please authenticate to access',
         options: const AuthenticationOptions(useErrorDialogs: true),
       );
@@ -40,10 +45,10 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future copyToClipBoard() async {
-    if (!_didAuthenticate) {
+    if (!widget.didAuthenticate) {
       await authenticate();
     }
-    if (_didAuthenticate) {
+    if (widget.didAuthenticate) {
       Clipboard.setData(
         ClipboardData(
           text: widget.snap['password'],
@@ -53,31 +58,31 @@ class _PassCardState extends State<PassCard> {
   }
 
   Future visibilityStatus() async {
-    if (!_didAuthenticate) {
+    if (!widget.didAuthenticate) {
       await authenticate();
     }
-    if (_didAuthenticate) {
+    if (widget.didAuthenticate) {
       setState(() {
-        isVisible = !isVisible;
+        widget.isVisible = !widget.isVisible;
       });
     }
   }
 
   Future deletePass() async {
-    if (!_didAuthenticate) {
+    if (!widget.didAuthenticate) {
       await authenticate();
     }
-    if (_didAuthenticate) {
+    if (widget.didAuthenticate) {
       await pdoffline.delete(id: widget.snap['uid']);
       await _fireStoreMethods.deletePass(passId: widget.snap['uid']);
     }
-    _didAuthenticate = false;
-    isVisible = false;
+    // widget.didAuthenticate = false;
+    // widget.isVisible = false;
   }
 
   void loadPass() {
     pass = [];
-    for (int i = 0; i < widget.snap['password'].toString().length; i++) {
+    for (int i = 0; i < 'password'.length; i++) {
       pass.add(
         Icon(
           Icons.circle,
@@ -85,13 +90,14 @@ class _PassCardState extends State<PassCard> {
         ),
       );
     }
+    // print(pass);
   }
 
   Future editDetails(BuildContext context) async {
-    if (!_didAuthenticate) {
+    if (!widget.didAuthenticate) {
       await authenticate();
     }
-    if (_didAuthenticate) {
+    if (widget.didAuthenticate) {
       TextEditingController savedPasswordController = TextEditingController();
       TextEditingController websiteNameController = TextEditingController();
       savedPasswordController.text = widget.snap['password'];
@@ -184,21 +190,16 @@ class _PassCardState extends State<PassCard> {
                     //   website: websiteNameController.text,
                     //   uid: user!.uid,
                     // );
-                    await _fireStoreMethods.updateCredentials(
-                      passId: widget.snap['uid'],
-                      password: savedPasswordController.text,
-                      website: websiteNameController.text,
-                    );
-
-                    await pdoffline.update(
-                      id: widget.snap['uid'],
-                      password: savedPasswordController.text,
-                      website: websiteNameController.text,
-                      userId: FirebaseAuth.instance.currentUser!.uid,
-                    );
-                    // savedPasswordController.clear();
-                    // websiteNameController.clear();
-                    Navigator.of(context).pop();
+                    if (savedPasswordController.text == "" ||
+                        websiteNameController.text == "") {
+                          alertDialogBox.dialogBox(textToDisplay: "Values cannot be empty!");
+                    } else {
+                      await _fireStoreMethods.updateCredentials(
+                        passId: widget.snap['uid'],
+                        password: savedPasswordController.text,
+                        website: websiteNameController.text,
+                      );
+                    }
                   },
                   child: Row(
                     children: [
@@ -242,7 +243,7 @@ class _PassCardState extends State<PassCard> {
 
   @override
   Widget build(BuildContext context) {
-    print("Yha tk toh aa gya");
+    // print("Yha tk toh aa gya");
     loadPass();
     return Container(
       margin: EdgeInsets.all(10),
@@ -267,13 +268,16 @@ class _PassCardState extends State<PassCard> {
         children: [
           Row(
             children: [
-              Text(
-                widget.snap['websiteName'],
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black,
-                  fontFamily: 'Ubuntu',
-                  fontWeight: FontWeight.w900,
+              Expanded(
+                child: Text(
+                  widget.snap['websiteName'],
+                  overflow: TextOverflow.visible,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
               ),
               Flexible(
@@ -316,30 +320,36 @@ class _PassCardState extends State<PassCard> {
             height: 10,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            // mainAxisSize: MainAxisAlignment.spaceBetween,
             children: [
-              isVisible
-                  ? Text(
-                      widget.snap['password'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.black,
-                        fontFamily: 'Ubuntu',
+              widget.isVisible
+                  ? Flexible(
+                      child: Text(
+                        widget.snap['password'],
+                        overflow: TextOverflow.visible,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.black,
+                          fontFamily: 'Ubuntu',
+                        ),
                       ),
                     )
                   : Row(
                       children: pass,
                     ),
-              Flexible(
-                child: Container(),
-                flex: 1,
-              ),
+              // Flexible(
+              //   child: Container(),
+
+              // ),
               IconButton(
                 onPressed: () async {
                   await visibilityStatus();
                 },
                 icon: Icon(
-                  isVisible ? Icons.visibility : Icons.visibility_off_rounded,
+                  widget.isVisible
+                      ? Icons.visibility
+                      : Icons.visibility_off_rounded,
                 ),
               ),
             ],

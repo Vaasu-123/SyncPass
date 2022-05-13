@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:passwordmanager/main.dart';
 import 'package:passwordmanager/resources/firestore_methods.dart';
+import 'package:passwordmanager/widgets/alert_dialog_box.dart';
 
 class SaveButton extends StatefulWidget {
   TextEditingController websiteNameController;
@@ -9,12 +11,10 @@ class SaveButton extends StatefulWidget {
   String? pass;
   FireStoreMethods fireStoreMethods = FireStoreMethods();
 
-  
   SaveButton({
     Key? key,
     required this.websiteNameController,
     this.savedPasswordController,
-    
     this.pass,
   }) : super(key: key);
 
@@ -26,27 +26,45 @@ class _SaveButtonState extends State<SaveButton> {
   bool isLoading = false;
   FireStoreMethods fireStoreMethods = FireStoreMethods();
   final user = FirebaseAuth.instance.currentUser;
-  void save() async {
+  CustomAlertDialogBox alertDialogBox = CustomAlertDialogBox();
+
+  Future save() async {
     if (widget.savedPasswordController == null) {
       print("Generated password vala");
-      await fireStoreMethods.addPassword(
-        password: widget.pass,
-        website: widget.websiteNameController.text,
-        uid: user!.uid,
-        
-      );
-      widget.websiteNameController.clear();
+      if (widget.websiteNameController.text == "") {
+        alertDialogBox.dialogBox(textToDisplay: "Values cannot be empty!");
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        await fireStoreMethods.addPassword(
+          password: widget.pass,
+          website: widget.websiteNameController.text,
+          uid: user!.uid,
+        );
+        widget.websiteNameController.clear();
+        // Navigator.of(navigatorKey.currentContext!).pop();
+        // Navigator.of(navigatorKey.currentContext!).pop();
+      }
       // Navigator.of(widget.ctx).pop();
     } else {
       print("Saved password vala");
-      await fireStoreMethods.addPassword(
-        password: widget.savedPasswordController!.text,
-        website: widget.websiteNameController.text,
-        uid: user!.uid,
-    
-      );
-      widget.savedPasswordController!.clear();
-      widget.websiteNameController.clear();
+      if (widget.websiteNameController.text == "" ||
+          widget.savedPasswordController!.text == "") {
+        alertDialogBox.dialogBox(textToDisplay: "Values cannot be empty!");
+        setState(() {
+          isLoading = false;
+        });
+      } else {
+        await fireStoreMethods.addPassword(
+          password: widget.savedPasswordController!.text,
+          website: widget.websiteNameController.text,
+          uid: user!.uid,
+        );
+        widget.savedPasswordController!.clear();
+        widget.websiteNameController.clear();
+        // Navigator.of(navigatorKey.currentContext!).pop();
+      }
       // Navigator.of(widget.ctx).pop();
     }
   }
@@ -58,12 +76,17 @@ class _SaveButtonState extends State<SaveButton> {
       //   overlayColor:
       //       MaterialStateColor.resolveWith((states) => Colors.transparent),
       // ),
-      onTap: () {
+      onTap: () async {
         setState(() {
           isLoading = true;
         });
-        save();
-        Navigator.of(context).pop();
+        await save();
+        // print("object ${isLoading}");
+        FocusManager.instance.primaryFocus?.unfocus();
+        if (isLoading) {
+          Navigator.of(context).pop();
+          // Navigator.of(context).pop();
+        }
       },
       child: Row(
         children: [

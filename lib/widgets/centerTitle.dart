@@ -144,8 +144,8 @@ class CenterTitle extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                margin: EdgeInsets.all(10),
-                child: Text(
+                margin: const EdgeInsets.all(10),
+                child: const Text(
                   "Your Password",
                   style: TextStyle(
                     fontFamily: 'Ubuntu',
@@ -163,11 +163,11 @@ class CenterTitle extends StatelessWidget {
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: TextField(
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.black,
                   ),
                   controller: savedPasswordController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Password@123",
                     hintStyle: TextStyle(
                       color: Colors.black,
@@ -177,12 +177,12 @@ class CenterTitle extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               Container(
-                margin: EdgeInsets.all(10),
-                child: Text(
+                margin: const EdgeInsets.all(10),
+                child: const Text(
                   "Website",
                   style: TextStyle(
                     fontFamily: 'Ubuntu',
@@ -202,7 +202,7 @@ class CenterTitle extends StatelessWidget {
                 ),
                 child: TextField(
                   controller: websiteNameController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: "Amazon",
                     hintStyle: TextStyle(
                       color: Colors.black,
@@ -261,7 +261,7 @@ class CenterTitle extends StatelessWidget {
                 color: Colors.black.withOpacity(0.5),
                 spreadRadius: 5,
                 blurRadius: 15,
-                offset: Offset(3, 8), // changes position of shadow
+                offset: const Offset(3, 8), // changes position of shadow
               ),
             ],
           ),
@@ -276,10 +276,10 @@ class CenterTitle extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                Color(0xFFFFFFF).withAlpha(50),
-                Color(0xFFFFFFF).withAlpha(50),
+                const Color(0x0fffffff).withAlpha(50),
+                const Color(0x0fffffff).withAlpha(50),
               ],
-              stops: [
+              stops: const [
                 0.3,
                 1,
               ],
@@ -308,7 +308,7 @@ class CenterTitle extends StatelessWidget {
                           radius: 40,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Column(
@@ -324,9 +324,9 @@ class CenterTitle extends StatelessWidget {
                               fontSize: 20,
                             ),
                           ),
-                          Text(
+                          const Text(
                             'All your passwords in one place',
-                            style: const TextStyle(
+                            style:  TextStyle(
                               color: Colors.white,
                               fontFamily: 'Ubuntu',
                               // fontWeight: FontWeight.w900,
@@ -342,7 +342,7 @@ class CenterTitle extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 50,
         ),
 
